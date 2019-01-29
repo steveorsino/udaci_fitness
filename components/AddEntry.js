@@ -1,11 +1,24 @@
 import React, { Component } from 'react';
-import { View } from 'react-native';
-import { getMetricMetaInfo } from '../utils/helpers';
+import { View, TouchableOpacity, Text } from 'react-native';
+import { getMetricMetaInfo, timeToString } from '../utils/helpers';
 import UdaciSlider from './UdaciSlider';
 import UdaciSteppers from './UdaciSteppers';
+import DateHeader from './DateHeader';
+import { Ionicons } from '@expo/vector-icons';
+import TextButton from './TextButton';
+
+function SubmitBtn ({ onPress }) {
+  return (
+    <TouchableOpacity
+      onPress={onPress}
+    >
+      <Text>Submit</Text>
+    </TouchableOpacity>
+  )
+}
 
 export default class AddEntry extends Component {
-  state={
+  state = {
     run: 0,
     bike: 0,
     swin: 0,
@@ -41,10 +54,52 @@ export default class AddEntry extends Component {
     }))
   }
 
+  submit = () => {
+    const key = timeToString();
+    const entry = this.state;
+
+    // Update Redux
+    //navigate to home
+    //save to db
+    //clear local notification
+
+    this.setState(() => ({
+      run: 0,
+      bike: 0,
+      swin: 0,
+      sleep: 0,
+      eat: 0
+    }))
+  }
+
+  reset = () => {
+    const key = timeToString();
+    //update redux
+    //route to home
+    //uodate db
+  }
+
   render() {
     const metaInfo = getMetricMetaInfo();
+
+    if (this.props.alreadyLogged) {
+      return (
+        <View>
+          <Ionicons
+            name={'ios-happy'}
+            size={100}
+          />
+          <Text>You alredy logged your info for today</Text>
+          <TextButton onPress={this.reset}>
+            RESET
+          </TextButton>
+        </View>
+      )
+    }
+
     return (
       <View>
+        <DateHeader date={ (new Date()).toLocaleDateString() } />
         {Object.keys(metaInfo).map((key) => {
           const { getIcon, type, ...rest } = metaInfo[key];
           const value = this.state[key];
@@ -63,10 +118,12 @@ export default class AddEntry extends Component {
                     onIncrement={() => this.increment(key)}
                     onDecrement={() => this.decrement(key)}
                     {...rest}
-                  />}
+                  />
+              }
             </View>
           )
         })}
+        <SubmitBtn onPress={this.submit} />
       </View>
     )
   }
