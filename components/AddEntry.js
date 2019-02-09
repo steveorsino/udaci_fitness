@@ -68,8 +68,6 @@ class AddEntry extends Component {
       [key]: entry
     }))
 
-    
-
     this.setState(() => ({
       run: 0,
       bike: 0,
