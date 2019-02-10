@@ -34,7 +34,8 @@ export function calculateDirection (heading) {
   } else if (isBetween(heading, 337.5, 360)) {
     direction = 'North'
   } else {
-    direction = 'Calculating'
+    //direction = 'Calculating'
+    direction = heading
   }
 
   return direction
